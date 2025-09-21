@@ -4,6 +4,7 @@ package com.dashboard.dashboard.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -24,15 +25,25 @@ public class Transaction {
     @NotNull
     private Double amount;
 
+    @NotNull
+    private Double price;
+
     @NotBlank
     private String type; // "income" or "expense"
 
     @NotNull
     private LocalDate date;
 
-    @NotBlank
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @NotNull
+    private TransactionCategory category;
 
     private String description;
+
+    @Transient
+    public Double getTotalValue() {
+        return (amount != null && price != null) ? amount * price : null;
+    }
 
 }

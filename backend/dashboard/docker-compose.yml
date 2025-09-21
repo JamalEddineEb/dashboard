@@ -11,16 +11,24 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  backend:
-    build: .
-    container_name: dashboard-backend
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dashboard
-      SPRING_DATASOURCE_USERNAME: dashboard
-      SPRING_DATASOURCE_PASSWORD: pass
-    ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
+  # backend:
+  #   build: .
+  #   container_name: dashboard-backend
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dashboard
+  #     SPRING_DATASOURCE_USERNAME: dashboard
+  #     SPRING_DATASOURCE_PASSWORD: pass
+  #     SPRING_PROFILES_ACTIVE: dev
+  #     SPRING_DEVTOOLS_RESTART_ENABLED: true
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./src:/app/src
+  #     - ./pom.xml:/app/pom.xml
+  #     - ./mvnw:/app/mvnw
+  #     - ./.mvn:/app/.mvn
+   
 volumes:
   postgres_data:

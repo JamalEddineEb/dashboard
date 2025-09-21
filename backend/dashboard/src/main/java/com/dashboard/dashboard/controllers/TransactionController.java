@@ -1,6 +1,6 @@
 package com.dashboard.dashboard.controllers;
 
-import com.dashboard.dashboard.entities.Transaction;
+import com.dashboard.dashboard.dtos.TransactionDTO;
 import com.dashboard.dashboard.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +16,13 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
+    public List<TransactionDTO> getAllTransactions() {
         return transactionService.getAllTransactions();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id) {
-        Transaction transaction = transactionService.getTransactionById(id);
+    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long id) {
+        TransactionDTO transaction = transactionService.getTransactionById(id);
         if (transaction != null) {
             return ResponseEntity.ok(transaction);
         } else {
@@ -31,13 +31,13 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction);
+    public TransactionDTO createTransaction(@RequestBody TransactionDTO transactionDTO) {
+        return transactionService.createTransaction(transactionDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        Transaction updated = transactionService.updateTransaction(id, transaction);
+    public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id, @RequestBody TransactionDTO transactionDTO) {
+        TransactionDTO updated = transactionService.updateTransaction(id, transactionDTO);
         if (updated != null) {
             return ResponseEntity.ok(updated);
         } else {
