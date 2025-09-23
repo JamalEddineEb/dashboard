@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-10">
+<div class="min-h-screen bg-blue-50 to-pink-50 py-10">
   <div class="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-lg">
     <h2 class="text-3xl font-extrabold mb-6 text-blue-700 text-center">Add Transaction</h2>
     <form [formGroup]="transactionForm" (ngSubmit)="addTransaction()" class="space-y-4">
@@ -68,13 +68,53 @@
       </div>
       <div>
         <label class="block text-gray-700 mb-1 font-medium">Category</label>
-        <select formControlName="categoryId" 
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-          <option value="">Select a category</option>
-          @for (category of categories$ | async; track category.id) {
-            <option [value]="category.id">{{ category.name }}</option>
-          }
-        </select>
+        <div class="flex gap-2">
+          <select formControlName="categoryId" 
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">Select a category</option>
+            @for (category of categories$ | async; track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+          <button type="button" (click)="openCategoryModal()" 
+                  class="px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded-lg transition whitespace-nowrap">
+            + New
+          </button>
+        </div>
+        
+        <!-- Inline Category Creation Form -->
+        @if (showCategoryForm) {
+          <div class="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h4 class="text-sm font-medium text-green-800 mb-3">Create New Category</h4>
+            <form [formGroup]="categoryForm" class="space-y-3">
+              <div>
+                <input type="text" formControlName="name" placeholder="Category name" 
+                       class="w-full px-3 py-2 text-sm border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" />
+                @if (categoryName?.invalid && (categoryName?.dirty || categoryName?.touched)) {
+                  <p class="text-red-500 text-xs mt-1">Category name is required</p>
+                }
+              </div>
+              <div>
+                <input type="text" formControlName="description" placeholder="Description (optional)" 
+                       class="w-full px-3 py-2 text-sm border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" />
+              </div>
+            </form>
+            @if (categoryError) {
+              <p class="text-red-500 text-xs mt-2">{{ categoryError }}</p>
+            }
+            <div class="flex gap-2 mt-3">
+              <button type="button" (click)="createCategory()" 
+                      class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm rounded transition">
+                Create
+              </button>
+              <button type="button" (click)="closeCategoryForm()" 
+                      class="px-3 py-1 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm rounded transition">
+                Cancel
+              </button>
+            </div>
+          </div>
+        }
+        
         @if ((categoryId?.dirty || categoryId?.touched)) {
           <div class="text-red-500 text-sm mt-1">
             @if (categoryId?.hasError('required')) {
@@ -89,7 +129,7 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
       </div>
       <button type="submit" [disabled]="transactionForm.invalid" 
-              class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+              class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
         Add
       </button>
     </form>

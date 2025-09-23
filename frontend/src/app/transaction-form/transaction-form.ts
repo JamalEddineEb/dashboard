@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { transaction } from '../interfaces/transaction';
-import { Category } from '../interfaces/category';
-import { TransactionsService } from '../services/transactions-service';
-import { CategoryService } from '../services/category.service';
+import { transaction } from '../../interfaces/transaction';
+import { Category } from '../../interfaces/category';
+import { TransactionsService } from '../../services/transactions-service';
+import { CategoryService } from '../../services/category.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -17,6 +17,11 @@ export class TransactionForm implements OnInit {
   transactionForm: FormGroup;
   transactions: Array<transaction> = [];
   categories$: Observable<Category[]>;
+  
+  // Category creation state
+  showCategoryForm = false;
+  categoryForm: FormGroup;
+  categoryError = '';
 
   constructor(
     public router: Router, 
@@ -30,7 +35,12 @@ export class TransactionForm implements OnInit {
       price: [0, [Validators.required, Validators.min(0.01)]],
       type: ['expense', Validators.required],
       date: ['', Validators.required],
-      categoryId: ['', Validators.required], // Changed to categoryId
+      categoryId: ['', Validators.required],
+      description: ['']
+    });
+
+    this.categoryForm = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
       description: ['']
     });
     
@@ -51,6 +61,44 @@ export class TransactionForm implements OnInit {
   get date() { return this.transactionForm.get('date'); }
   get categoryId() { return this.transactionForm.get('categoryId'); }
   get description() { return this.transactionForm.get('description'); }
+
+  // Category form getters
+  get categoryName() { return this.categoryForm.get('name'); }
+  get categoryDescription() { return this.categoryForm.get('description'); }
+
+  openCategoryModal() {
+    this.showCategoryForm = true;
+    this.categoryError = '';
+    this.categoryForm.reset();
+  }
+
+  closeCategoryForm() {
+    this.showCategoryForm = false;
+    this.categoryError = '';
+  }
+
+  createCategory() {
+    if (this.categoryForm.valid) {
+      const newCategory = this.categoryForm.value;
+      
+      this.categoryService.addCategory(newCategory).subscribe({
+        next: (createdCategory) => {
+          // Auto-select the newly created category
+          this.transactionForm.patchValue({ categoryId: createdCategory.id });
+          this.closeCategoryForm();
+        },
+        error: (error) => {
+          console.error('Error creating category:', error);
+          this.categoryError = 'Failed to create category. Please try again.';
+        }
+      });
+    } else {
+      // Mark fields as touched to show validation errors
+      Object.keys(this.categoryForm.controls).forEach(key => {
+        this.categoryForm.get(key)?.markAsTouched();
+      });
+    }
+  }
 
   addTransaction() {
     if (this.transactionForm.valid) {

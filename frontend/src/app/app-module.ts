@@ -7,12 +7,17 @@ import { TransactionForm } from './transaction-form/transaction-form';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi, withFetch } from '@angular/common/http';
 import { TransactionListComponent } from './transaction-list-component/transaction-list-component';
+import { Header } from './header/header';
+import { Categories } from './categories/categories';
+import { Reports } from './reports/reports';
 
 @NgModule({
   declarations: [
     App,
     TransactionForm,
-    TransactionListComponent
+    TransactionListComponent,
+    Header,
+    Reports
   ],
   imports: [
     BrowserModule,

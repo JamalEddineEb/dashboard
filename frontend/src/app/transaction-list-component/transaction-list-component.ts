@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TransactionsService } from '../services/transactions-service';
+import { TransactionsService } from '../../services/transactions-service';
 import { Observable } from 'rxjs';
-import { transaction } from '../interfaces/transaction';
+import { transaction } from '../../interfaces/transaction';
 
 @Component({
   selector: 'app-transaction-list-component',

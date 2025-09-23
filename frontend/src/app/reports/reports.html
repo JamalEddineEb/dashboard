@@ -1,0 +1,359 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="flex items-center justify-center min-h-96">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+          <h3 class="text-lg font-semibold text-gray-700">Loading Analytics...</h3>
+          <p class="text-gray-500">Crunching your financial data</p>
+        </div>
+      </div>
+    } @else if (hasError) {
+      <!-- Error State -->
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
+        <div class="text-6xl mb-4">⚠️</div>
+        <h3 class="text-xl font-bold text-red-800 mb-2">Error Loading Reports</h3>
+        <p class="text-red-600 mb-4">{{ errorMessage }}</p>
+        <button (click)="loadAllReports()" 
+                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+          Try Again
+        </button>
+      </div>
+    } @else {
+
+      <!-- Header with Controls -->
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8">
+        <div>
+          <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            Advanced Analytics Dashboard
+          </h1>
+          <p class="text-gray-600 mt-2">Comprehensive insights into your financial performance</p>
+        </div>
+        
+        <!-- Year Selector -->
+        <div class="mt-4 lg:mt-0">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Analysis Year</label>
+          <select (change)="onYearChange($any($event.target).value)" 
+                  [value]="selectedYear"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Financial Summary Cards -->
+      @if (financialSummary) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-green-500 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-green-100 text-sm font-medium">Total Income</p>
+                <p class="text-2xl font-bold">${{ financialSummary.totalIncome | number:'1.2-2' }}</p>
+                <p class="text-green-200 text-xs mt-1">
+                  Growth: <span [class]="getIncomeGrowthTrend() >= 0 ? 'text-white' : 'text-red-200'">
+                    {{ getIncomeGrowthTrend() | number:'1.1-1' }}%
+                  </span>
+                </p>
+              </div>
+              <div class="text-4xl">💰</div>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-red-100 text-sm font-medium">Total Expenses</p>
+                <p class="text-2xl font-bold">${{ financialSummary.totalExpenses | number:'1.2-2' }}</p>
+                <p class="text-red-200 text-xs mt-1">
+                  Growth: <span [class]="getExpenseGrowthTrend() <= 0 ? 'text-white' : 'text-red-200'">
+                    {{ getExpenseGrowthTrend() | number:'1.1-1' }}%
+                  </span>
+                </p>
+              </div>
+              <div class="text-4xl">💸</div>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-blue-100 text-sm font-medium">Net Balance</p>
+                <p class="text-2xl font-bold" 
+                   [class]="financialSummary.currentBalance >= 0 ? 'text-white' : 'text-red-300'">
+                  ${{ financialSummary.currentBalance | number:'1.2-2' }}
+                </p>
+                <p class="text-blue-200 text-xs mt-1">
+                  {{ financialSummary.currentBalance >= 0 ? 'Positive' : 'Deficit' }}
+                </p>
+              </div>
+              <div class="text-4xl">📈</div>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl transform hover:scale-105 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-purple-100 text-sm font-medium">Transactions</p>
+                <p class="text-2xl font-bold">{{ financialSummary.totalTransactions }}</p>
+                <p class="text-purple-200 text-xs mt-1">Total Count</p>
+              </div>
+              <div class="text-4xl">📊</div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Income vs Expense Comparison -->
+      @if (incomeExpenseComparison) {
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-3xl mr-3">⚖️</span>
+            Income vs Expense Analysis
+          </h3>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Visual Comparison -->
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-green-600">Income ({{ incomeExpenseComparison.incomeTransactionCount }} transactions)</span>
+                <span class="text-lg font-bold text-green-600">${{ incomeExpenseComparison.totalIncome | number:'1.2-2' }}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-6">
+                <div class="bg-gradient-to-r from-green-400 to-green-600 h-6 rounded-full flex items-center justify-end pr-2"
+                     [style.width.%]="incomeExpenseComparison.incomePercentage">
+                  <span class="text-white text-xs font-bold">{{ incomeExpenseComparison.incomePercentage| number:'1.0-0' }}%</span>
+                </div>
+              </div>
+              
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-medium text-red-600">Expenses ({{ incomeExpenseComparison.expenseTransactionCount }} transactions)</span>
+                <span class="text-lg font-bold text-red-600">${{ incomeExpenseComparison.totalExpenses | number:'1.2-2' }}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-6">
+                <div class="bg-gradient-to-r from-red-400 to-red-600 h-6 rounded-full flex items-center justify-end pr-2"
+                     [style.width.%]="incomeExpenseComparison.expensePercentage">
+                  <span class="text-white text-xs font-bold">{{ incomeExpenseComparison.expensePercentage | number:'1.0-0' }}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Summary Stats -->
+            <div class="bg-blue-50 rounded-xl p-6">
+              <h4 class="font-bold text-gray-800 mb-4">Summary</h4>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Net Result:</span>
+                  <span class="font-bold" [class]="financialSummary!.currentBalance >= 0 ? 'text-green-600' : 'text-red-600'">
+                    ${{ financialSummary!.currentBalance | number:'1.2-2' }}
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Savings Rate:</span>
+                  <span class="font-bold text-blue-600">
+                    {{ (financialSummary!.currentBalance / financialSummary!.totalIncome * 100) | number:'1.1-1' }}%
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Expense Ratio:</span>
+                  <span class="font-bold text-purple-600">
+                    {{ (incomeExpenseComparison.totalExpenses / incomeExpenseComparison.totalIncome * 100) | number:'1.1-1' }}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Monthly Trend Analysis -->
+      @if (monthlyReports.length > 0) {
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-3xl mr-3">📅</span>
+            Monthly Trend Analysis - {{ selectedYear }}
+          </h3>
+          
+          <div class="overflow-x-auto">
+            <div class="min-w-full">
+              <!-- Chart Area -->
+              <div class="relative h-64 mb-6">
+                <div class="flex items-end justify-between h-full space-x-2">
+                  @for (month of monthlyReports; track month.month) {
+                    <div class="flex-1 flex flex-col items-center">
+                      <!-- Income Bar -->
+                      <div class="w-full bg-green-500 hover:bg-green-600 transition-colors rounded-t mb-1 flex items-end justify-center"
+                           [style.height.px]="(month.totalIncome / getMonthlyChartMaxValue()) * 200"
+                           [title]="'Income: $' + (month.totalIncome | number:'1.2-2')">
+                        @if (month.totalIncome > 0) {
+                          <span class="text-white text-xs font-bold mb-1">${{ month.totalIncome | number:'1.0-0' }}</span>
+                        }
+                      </div>
+                      
+                      <!-- Expense Bar -->
+                      <div class="w-full bg-red-500 hover:bg-red-600 transition-colors rounded-b flex items-start justify-center"
+                           [style.height.px]="(month.totalExpenses / getMonthlyChartMaxValue()) * 200"
+                           [title]="'Expenses: $' + (month.totalExpenses | number:'1.2-2')">
+                        @if (month.totalExpenses > 0) {
+                          <span class="text-white text-xs font-bold mt-1">${{ month.totalExpenses | number:'1.0-0' }}</span>
+                        }
+                      </div>
+                      
+                      <!-- Month Label -->
+                      <span class="text-xs text-gray-600 mt-2 font-medium">{{ month.month.toString().slice(0,3) }}</span>
+                    </div>
+                  }
+                </div>
+                
+                <!-- Legend -->
+                <div class="flex justify-center space-x-6 mt-4">
+                  <div class="flex items-center">
+                    <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                    <span class="text-sm text-gray-600">Income</span>
+                  </div>
+                  <div class="flex items-center">
+                    <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                    <span class="text-sm text-gray-600">Expenses</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Category Analysis Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        
+        <!-- Top Spending Categories -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">📉</span>
+            Top Spending Categories
+          </h3>
+          
+          @if (topSpendingCategories.length > 0) {
+            <div class="space-y-4">
+              @for (category of topSpendingCategories; track category.categoryId; let i = $index) {
+                <div class="relative">
+                  <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                      <div class="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center mr-3"
+                           [style.background-color]="category.color">{{ i + 1 }}</div>
+                      <span class="font-medium text-gray-800">{{ category.categoryName }}</span>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-bold text-red-600">${{ category?.expenseTotal | number:'1.2-2' }}</div>
+                      <div class="text-xs text-gray-500">{{ category.transactionCount }} transactions</div>
+                    </div>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="h-3 rounded-full transition-all duration-1000"
+                         [style.width.%]="category.expensePercentage*100"
+                         [style.background-color]="category.color"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    Avg: ${{ category.averageAmount | number:'1.2-2' }} • {{ category.expensePercentage * 100 | number:'1.1-1' }}% of total
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-8 text-gray-500">
+              <div class="text-4xl mb-2">📉</div>
+              <p>No spending data available</p>
+            </div>
+          }
+        </div>
+
+        <!-- Top Income Categories -->
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">📈</span>
+            Top Income Categories
+          </h3>
+          
+          @if (topIncomeCategories.length > 0) {
+            <div class="space-y-4">
+              @for (category of topIncomeCategories; track category.categoryId; let i = $index) {
+                <div class="relative">
+                  <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                      <div class="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center mr-3"
+                           [style.background-color]="category.color">{{ i + 1 }}</div>
+                      <span class="font-medium text-gray-800">{{ category.categoryName }}</span>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-bold text-green-600">${{ category.incomeTotal | number:'1.2-2' }}</div>
+                      <div class="text-xs text-gray-500">{{ category.transactionCount }} transactions</div>
+                    </div>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="h-3 rounded-full transition-all duration-1000"
+                         [style.width.%]="category.incomePercentage*100"
+                         [style.background-color]="category.color"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    Avg: ${{ category.averageAmount | number:'1.2-2' }} • {{ category.incomePercentage * 100| number:'1.1-1' }}% of total
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-8 text-gray-500">
+              <div class="text-4xl mb-2">📈</div>
+              <p>No income data available</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Complete Category Overview -->
+      @if (allCategories.length > 0) {
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-3xl mr-3">📊</span>
+            Complete Category Analysis
+          </h3>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-gray-200 bg-gray-50">
+                  <th class="text-left py-4 px-4 font-semibold text-gray-700">Category</th>
+                  <th class="text-left py-4 px-4 font-semibold text-gray-700">Transactions</th>
+                  <th class="text-left py-4 px-4 font-semibold text-gray-700">Total Amount</th>
+                  <th class="text-left py-4 px-4 font-semibold text-gray-700">Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (category of allCategories; track category.categoryId) {
+                  <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td class="py-4 px-4">
+                      <div class="flex items-center">
+                        <div class="w-4 h-4 rounded-full mr-3" [style.background-color]="category.color"></div>
+                        <span class="font-medium text-gray-800">{{ category.categoryName }}</span>
+                      </div>
+                    </td>
+                   
+                    <td class="py-4 px-4 text-gray-600">{{ category.transactionCount }}</td>
+                    <td class="py-4 px-4 font-semibold" 
+                        [class]="category.type === 'income' ? 'text-green-600' : 'text-red-600'">
+                      ${{ category.netAmount | number:'1.2-2' }}
+                    </td>
+                    <td class="py-4 px-4 text-gray-600">${{ category.averageAmount | number:'1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+    }
+
+  </div>
+</div>
