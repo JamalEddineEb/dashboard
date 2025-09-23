@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
+import com.dashboard.dashboard.enums.TransactionType;
 
 @Data
 @NoArgsConstructor
@@ -24,8 +25,8 @@ public class TransactionDTO {
 
     private Double totalValue;
 
-    @NotBlank
-    private String type;
+    @NotNull
+    private TransactionType type;
 
     @NotNull
     private LocalDate date;

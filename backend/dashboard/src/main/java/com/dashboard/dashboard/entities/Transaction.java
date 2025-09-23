@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
+import com.dashboard.dashboard.enums.TransactionType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -28,8 +29,9 @@ public class Transaction {
     @NotNull
     private Double price;
 
-    @NotBlank
-    private String type; // "income" or "expense"
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private TransactionType type;
 
     @NotNull
     private LocalDate date;
