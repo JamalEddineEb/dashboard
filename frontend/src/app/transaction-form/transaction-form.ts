@@ -82,7 +82,6 @@ export class TransactionForm implements OnInit {
   createCategory() {
     if (this.categoryForm.valid) {
       const newCategory = this.categoryForm.value;
-      console.log(newCategory,"haha");
       
       
       this.categoryService.addCategory(newCategory).subscribe({
