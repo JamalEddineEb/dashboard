@@ -4,7 +4,7 @@ export interface transaction {
     type: string,
     date: string
     categoryId: number, // Reference to Category entity
-    category?: string, // Optional for display purposes (populated by join/lookup)
+    category?: string,
     amount: number,
     price: number,
     totalValue?: number,

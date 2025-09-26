@@ -41,6 +41,7 @@ export class TransactionForm implements OnInit {
 
     this.categoryForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/.*\S.*/)]],
+      type: ['expense',Validators.required],
       description: ['']
     });
     
@@ -64,12 +65,13 @@ export class TransactionForm implements OnInit {
 
   // Category form getters
   get categoryName() { return this.categoryForm.get('name'); }
+  get categoryType() { return this.categoryForm.get('type'); }
   get categoryDescription() { return this.categoryForm.get('description'); }
 
   openCategoryModal() {
     this.showCategoryForm = true;
     this.categoryError = '';
-    this.categoryForm.reset();
+    // this.categoryForm.reset();
   }
 
   closeCategoryForm() {
@@ -80,6 +82,8 @@ export class TransactionForm implements OnInit {
   createCategory() {
     if (this.categoryForm.valid) {
       const newCategory = this.categoryForm.value;
+      console.log(newCategory,"haha");
+      
       
       this.categoryService.addCategory(newCategory).subscribe({
         next: (createdCategory) => {

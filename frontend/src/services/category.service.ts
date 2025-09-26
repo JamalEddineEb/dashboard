@@ -31,6 +31,8 @@ export class CategoryService {
 
   /** add */
   addCategory(category: Category): Observable<Category> {
+    console.log(category);
+    
     return this.http.post<Category>(this.apiUrl, category).pipe(
       tap(() => {
         this.loadCategories(); // Reload categories after adding
