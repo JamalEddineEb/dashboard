@@ -1,48 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { FinancialSummaryDTO } from '../interfaces/financial_summary_dto';
+import { CategorySummaryDTO } from '../interfaces/category_summary_dto';
+import { MonthlyReportDTO } from '../interfaces/monthly_report_dto';
+import { IncomeExpenseComparisonDTO } from '../interfaces/income_expense_comparison_dto';
 
-// DTOs matching backend
-export interface FinancialSummaryDTO {
-  totalIncome: number;
-  totalExpenses: number;
-  currentBalance: number;
-  totalTransactions: number;
-  averageTransactionValue: number;
-}
 
-export interface CategorySummaryDTO {
-  categoryId: number;
-  categoryName: string;
-  netAmount: number;
-  incomeTotal: number;
-  expenseTotal: number;
-  transactionCount: number;
-  averageAmount: number;
-  incomePercentage: number;
-  expensePercentage: number;
-  type: 'income' | 'expense';
-}
 
-export interface MonthlyReportDTO {
-  year: number;
-  month: number;
-  monthName: string;
-  totalIncome: number;
-  totalExpenses: number;
-  netBalance: number;
-  transactionCount: number;
-}
-
-export interface IncomeExpenseComparisonDTO {
-  totalIncome: number;
-  totalExpenses: number;
-  netBalance: number;
-  incomeTransactionCount: number;
-  expenseTransactionCount: number;
-  incomePercentage: number;
-  expensePercentage: number;
-}
 
 @Injectable({
   providedIn: 'root'

@@ -1,6 +1,9 @@
 package com.dashboard.dashboard.dtos;
 
+import com.dashboard.dashboard.enums.TransactionType;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +16,7 @@ public class TransactionCategoryDTO {
 
     @NotBlank
     private String name;
+
+    @NotNull
+    private TransactionType type;
 }

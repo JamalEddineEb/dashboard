@@ -38,9 +38,9 @@
           <select (change)="onYearChange($any($event.target).value)" 
                   [value]="selectedYear"
                   class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
+            @for (year of years; track year) {
+              <option [value]="year">{{year}}</option>
+            }
           </select>
         </div>
       </div>
@@ -52,7 +52,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-green-100 text-sm font-medium">Total Income</p>
-                <p class="text-2xl font-bold">${{ financialSummary.totalIncome | number:'1.2-2' }}</p>
+                <p class="text-2xl font-bold">${{ financialSummary.monthlyIncome | number:'1.2-2' }}</p>
                 <p class="text-green-200 text-xs mt-1">
                   Growth: <span [class]="getIncomeGrowthTrend() >= 0 ? 'text-white' : 'text-red-200'">
                     {{ getIncomeGrowthTrend() | number:'1.1-1' }}%
@@ -67,7 +67,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-red-100 text-sm font-medium">Total Expenses</p>
-                <p class="text-2xl font-bold">${{ financialSummary.totalExpenses | number:'1.2-2' }}</p>
+                <p class="text-2xl font-bold">${{ financialSummary.monthlyExpenses | number:'1.2-2' }}</p>
                 <p class="text-red-200 text-xs mt-1">
                   Growth: <span [class]="getExpenseGrowthTrend() <= 0 ? 'text-white' : 'text-red-200'">
                     {{ getExpenseGrowthTrend() | number:'1.1-1' }}%
@@ -154,7 +154,7 @@
                 <div class="flex justify-between">
                   <span class="text-gray-600">Savings Rate:</span>
                   <span class="font-bold text-blue-600">
-                    {{ (financialSummary!.currentBalance / financialSummary!.totalIncome * 100) | number:'1.1-1' }}%
+                    {{ (financialSummary!.currentBalance / financialSummary!.monthlyExpenses * 100) | number:'1.1-1' }}%
                   </span>
                 </div>
                 <div class="flex justify-between">
@@ -186,19 +186,19 @@
                     <div class="flex-1 flex flex-col items-center">
                       <!-- Income Bar -->
                       <div class="w-full bg-green-500 hover:bg-green-600 transition-colors rounded-t mb-1 flex items-end justify-center"
-                           [style.height.px]="(month.totalIncome / getMonthlyChartMaxValue()) * 200"
-                           [title]="'Income: $' + (month.totalIncome | number:'1.2-2')">
-                        @if (month.totalIncome > 0) {
-                          <span class="text-white text-xs font-bold mb-1">${{ month.totalIncome | number:'1.0-0' }}</span>
+                           [style.height.px]="(month.monthlyIncome / getMonthlyChartMaxValue()) * 200"
+                           [title]="'Income: $' + (month.monthlyIncome | number:'1.2-2')">
+                        @if (month.monthlyIncome > 0) {
+                          <span class="text-white text-xs font-bold mb-1">${{ month.monthlyIncome | number:'1.0-0' }}</span>
                         }
                       </div>
                       
                       <!-- Expense Bar -->
                       <div class="w-full bg-red-500 hover:bg-red-600 transition-colors rounded-b flex items-start justify-center"
-                           [style.height.px]="(month.totalExpenses / getMonthlyChartMaxValue()) * 200"
-                           [title]="'Expenses: $' + (month.totalExpenses | number:'1.2-2')">
-                        @if (month.totalExpenses > 0) {
-                          <span class="text-white text-xs font-bold mt-1">${{ month.totalExpenses | number:'1.0-0' }}</span>
+                           [style.height.px]="(month!.monthlyExpenses / getMonthlyChartMaxValue()) * 200"
+                           [title]="'Expenses: $' + (month!.monthlyExpenses | number:'1.2-2')">
+                        @if (month.monthlyExpenses > 0) {
+                          <span class="text-white text-xs font-bold mt-1">${{ month!.monthlyExpenses | number:'1.0-0' }}</span>
                         }
                       </div>
                       

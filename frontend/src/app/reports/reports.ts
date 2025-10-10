@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { ReportsService, FinancialSummaryDTO, CategorySummaryDTO, MonthlyReportDTO, IncomeExpenseComparisonDTO } from '../../services/reports.service';
+import { ReportsService } from '../../services/reports.service';
+import { FinancialSummaryDTO } from '../../interfaces/financial_summary_dto';
+import { CategorySummaryDTO } from '../../interfaces/category_summary_dto';
+import { MonthlyReportDTO } from '../../interfaces/monthly_report_dto';
+import { IncomeExpenseComparisonDTO } from '../../interfaces/income_expense_comparison_dto';
 
 interface EnhancedCategoryStats extends CategorySummaryDTO {
   color: string;
@@ -20,6 +24,7 @@ export class Reports implements OnInit {
   allCategories: EnhancedCategoryStats[] = [];
   topSpendingCategories: EnhancedCategoryStats[] = [];
   topIncomeCategories: EnhancedCategoryStats[] = [];
+  years: string[] = [];
   
   // Monthly Analysis
   monthlyReports: MonthlyReportDTO[] = [];
@@ -43,8 +48,11 @@ export class Reports implements OnInit {
 
   ngOnInit() {
     this.loadAllReports();
+    const currentYear = new Date().getFullYear();
+    this.years = Array.from({length: 5}, (_, i) => (currentYear - i).toString());
+   
     console.log(this.monthlyReports);
-    console.log(this.allCategories);
+    // console.log(this.allCategories);
     
   }
 
@@ -99,22 +107,22 @@ export class Reports implements OnInit {
   getMonthlyChartMaxValue(): number {
     if (!this.monthlyReports.length) return 0;
     return Math.max(...this.monthlyReports.map(m => 
-      Math.max(Math.abs(m.totalIncome), Math.abs(m.totalExpenses))
+      Math.max(Math.abs(m.monthlyIncome), Math.abs(m.monthlyExpenses))
     ));
   }
 
   getIncomeGrowthTrend(): number {
     if (this.monthlyReports.length < 2) return 0;
-    const current = this.monthlyReports[this.monthlyReports.length - 1]?.totalIncome || 0;
-    const previous = this.monthlyReports[this.monthlyReports.length - 2]?.totalIncome || 0;
+    const current = this.monthlyReports[this.monthlyReports.length - 1]?.monthlyIncome || 0;
+    const previous = this.monthlyReports[this.monthlyReports.length - 2]?.monthlyIncome || 0;
     if (previous === 0) return 0;
     return ((current - previous) / previous) * 100;
   }
 
   getExpenseGrowthTrend(): number {
     if (this.monthlyReports.length < 2) return 0;
-    const current = this.monthlyReports[this.monthlyReports.length - 1]?.totalExpenses || 0;
-    const previous = this.monthlyReports[this.monthlyReports.length - 2]?.totalExpenses || 0;
+    const current = this.monthlyReports[this.monthlyReports.length - 1]?.monthlyExpenses || 0;
+    const previous = this.monthlyReports[this.monthlyReports.length - 2]?.monthlyExpenses || 0;
     if (previous === 0) return 0;
     return ((current - previous) / previous) * 100;
   }

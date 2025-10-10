@@ -1,5 +1,7 @@
 package com.dashboard.dashboard.entities;
 
+import com.dashboard.dashboard.enums.TransactionType;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -19,4 +21,7 @@ public class TransactionCategory {
 
     @NotBlank
     private String name;
+
+    @NotNull
+    private TransactionType type;
 }

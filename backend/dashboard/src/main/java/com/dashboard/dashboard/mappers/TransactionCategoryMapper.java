@@ -11,14 +11,16 @@ public class TransactionCategoryMapper {
     public TransactionCategory toEntity(TransactionCategoryDTO dto) {
         return new TransactionCategory(
             dto.getId(),
-            dto.getName()
+            dto.getName(),
+            dto.getType()
         );
     }
 
     public TransactionCategoryDTO toDTO(TransactionCategory entity) {
         return new TransactionCategoryDTO(
             entity.getId(),
-            entity.getName()
+            entity.getName(),
+            entity.getType()
         );
     }
 }
