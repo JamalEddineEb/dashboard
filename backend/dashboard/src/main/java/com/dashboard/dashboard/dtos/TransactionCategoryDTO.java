@@ -16,7 +16,4 @@ public class TransactionCategoryDTO {
 
     @NotBlank
     private String name;
-
-    @NotNull
-    private TransactionType type;
 }

@@ -21,7 +21,4 @@ public class TransactionCategory {
 
     @NotBlank
     private String name;
-
-    @NotNull
-    private TransactionType type;
 }

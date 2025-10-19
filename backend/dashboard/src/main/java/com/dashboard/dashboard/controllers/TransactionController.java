@@ -16,8 +16,11 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @GetMapping
-    public List<TransactionDTO> getAllTransactions() {
-        return transactionService.getAllTransactions();
+    public List<TransactionDTO> getTransactions(
+        @RequestParam(required = false) Long categoryId,
+        @RequestParam(required = false) String type
+    ) {
+        return transactionService.getTransactions(categoryId, type);
     }
 
     @GetMapping("/{id}")

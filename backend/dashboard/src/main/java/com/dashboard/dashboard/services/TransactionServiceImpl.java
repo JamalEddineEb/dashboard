@@ -3,11 +3,17 @@ package com.dashboard.dashboard.services;
 import com.dashboard.dashboard.dtos.TransactionDTO;
 import com.dashboard.dashboard.entities.Transaction;
 import com.dashboard.dashboard.entities.TransactionCategory;
+import com.dashboard.dashboard.enums.TransactionType;
 import com.dashboard.dashboard.mappers.TransactionMapper;
 import com.dashboard.dashboard.repositories.TransactionRepository;
+import com.dashboard.dashboard.specifications.TransactionSpecifications;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +30,25 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionMapper transactionMapper;
 
     @Override
-    public List<TransactionDTO> getAllTransactions() {
-        List<TransactionDTO> transactions = transactionRepository.findAll().stream()
+    public List<TransactionDTO> getTransactions(Long categoryId, String type) {
+        Specification<Transaction> spec = Specification.unrestricted();
+        if (categoryId != null) {
+            spec = spec.and(TransactionSpecifications.byCategory(categoryId));
+        }
+        if (type != null) {
+            spec = spec.and(TransactionSpecifications.byType(TransactionType.valueOf(type.toUpperCase())));
+        }
+
+        List<TransactionDTO> transactions = transactionRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "id"))
+                                        .stream()
                                         .map(transactionMapper::toDTO)
                                         .collect(Collectors.toList());
         Collections.reverse(transactions);
+
         return transactions;
+
     }
+
 
     @Override
     public TransactionDTO getTransactionById(Long id) {
@@ -66,5 +84,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
+    }
+
+    @Override
+    public List<TransactionDTO> getTransactionsByCategory(Long transactionCategoryId) {
+        TransactionCategory category = transactionCategoryService.getCategoryEntityById(transactionCategoryId);
+        List<TransactionDTO> transactions = transactionRepository.findByCategory(category).stream()
+                                        .map(transactionMapper::toDTO)
+                                        .collect(Collectors.toList());
+        Collections.reverse(transactions);
+        return transactions;
     }
 }
