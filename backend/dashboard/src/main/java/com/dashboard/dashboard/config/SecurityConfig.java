@@ -24,7 +24,7 @@ public class SecurityConfig {
 			.oauth2Login(oauth2 -> oauth2
 						.successHandler(new SimpleUrlAuthenticationSuccessHandler("http://localhost:4200"))
 			)  // enables redirect to Authentik
-			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // optional if you also use API tokens
+			.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); 
 		return http.build();
 	}
 
