@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchWithAuth } from "../utilities/api"
 
 export interface Transaction {
   name: string;
@@ -29,13 +30,23 @@ export const useTransactions = (categoryId?: string, type?: string) => {
   const url = `${API_BASE_URL}?${params.toString()}`;
 
   return useQuery({
-    queryKey: ["transactions", categoryId, type], 
-    queryFn: async (): Promise<Transaction[]> => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Failed to fetch transactions");
-      return response.json();
-    },
+    queryKey: ['transactions', categoryId, type], 
+    queryFn: async (): Promise<Transaction[]> => fetchWithAuth(url, {
+      method: 'GET',
+    }),
   });
+
+  // return useQuery({
+  //   queryKey: ["transactions", categoryId, type], 
+  //   queryFn: async (): Promise<Transaction[]> => {
+  //     const response = await fetch(url, {
+  //       method: 'GET',
+  //       credentials: 'include',
+  //     });
+  //     if (!response.ok) throw new Error("Failed to fetch transactions");
+  //     return response.json();
+  //   },
+  // });
 };
 
 

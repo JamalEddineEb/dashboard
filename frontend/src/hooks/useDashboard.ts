@@ -54,7 +54,10 @@ export const useFinancialSummary = () => {
   return useQuery({
     queryKey: ["financial-summary", useTransactions()],
     queryFn: async (): Promise<FinancialSummary> => {
-      const response = await fetch(`${API_BASE_URL}/financial-summary`);
+      const response = await fetch(`${API_BASE_URL}/financial-summary`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch cashflow data");
       return response.json();
     },
@@ -65,7 +68,10 @@ export const useMonthlyReport = (year: number = new Date().getFullYear()) => {
   return useQuery({
     queryKey: ["monthly-report", year],
     queryFn: async (): Promise<CashflowData[]> => {
-      const response = await fetch(`${API_BASE_URL}/monthly-report?year=${year}`);
+      const response = await fetch(`${API_BASE_URL}/monthly-report?year=${year}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch monthly report");
       return response.json();
     },
@@ -76,7 +82,10 @@ export const useCategorySummary = () => {
   return useQuery({
     queryKey: ["category-summary"],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/category-summary`);
+      const response = await fetch(`${API_BASE_URL}/category-summary`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch category summary");
       return response.json();
     },
@@ -87,7 +96,10 @@ export const useTopSpending = (limit: number = 5) => {
   return useQuery({
     queryKey: ["top-spending", limit],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/top-spending?limit=${limit}`);
+      const response = await fetch(`${API_BASE_URL}/top-spending?limit=${limit}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch top spending");
       return response.json();
     },
@@ -98,7 +110,10 @@ export const useTopIncome = (limit: number = 5) => {
   return useQuery({
     queryKey: ["top-income", limit],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/top-income?limit=${limit}`);
+      const response = await fetch(`${API_BASE_URL}/top-income?limit=${limit}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch top income");
       return response.json();
     },
@@ -109,7 +124,10 @@ export const useIncomeExpenseComparison = () => {
   return useQuery({
     queryKey: ["income-expense-comparison"],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/income-expense-comparison`);
+      const response = await fetch(`${API_BASE_URL}/income-expense-comparison`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch income expense comparison");
       return response.json();
     },
@@ -120,7 +138,10 @@ export const useCategorySummaryById = (categoryId: string) => {
   return useQuery({
     queryKey: ["category-summary", categoryId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/summary-by-category/${categoryId}`);
+      const response = await fetch(`${API_BASE_URL}/summary-by-category/${categoryId}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
       if (!response.ok) throw new Error("Failed to fetch category summary");
       return response.json();
     },
