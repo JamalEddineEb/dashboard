@@ -5,12 +5,9 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
     ...options,
   });  
 
-  console.log(response.status ,"haha");
-
 
   if (response.status === 401 || response.status === 403) {
     const currentUrl = window.location.href;
-    console.log(currentUrl,"hoho");
     
     const loginUrl = `http://localhost:8080/api/auth/signin?callbackUrl=${encodeURIComponent(currentUrl)}`;
     window.location.href = loginUrl;

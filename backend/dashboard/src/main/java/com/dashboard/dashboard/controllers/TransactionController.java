@@ -1,6 +1,8 @@
 package com.dashboard.dashboard.controllers;
 
 import com.dashboard.dashboard.dtos.TransactionDTO;
+import com.dashboard.dashboard.entities.UserEntity;
+import com.dashboard.dashboard.repositories.UserRepository;
 import com.dashboard.dashboard.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,9 @@ public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private UserRepository repo;
 
     @GetMapping
     public List<TransactionDTO> getTransactions(

@@ -31,26 +31,27 @@ export const useTransactions = (categoryId?: string, type?: string) => {
 
   return useQuery({
     queryKey: ['transactions', categoryId, type], 
-    queryFn: async (): Promise<Transaction[]> => fetchWithAuth(url, {
-      method: 'GET',
-    }),
+    queryFn: async (): Promise<Transaction[]> => {
+      const response = fetchWithAuth(url, {
+        method: 'GET',
+      });
+      return response;
+    },
   });
-
-  // return useQuery({
-  //   queryKey: ["transactions", categoryId, type], 
-  //   queryFn: async (): Promise<Transaction[]> => {
-  //     const response = await fetch(url, {
-  //       method: 'GET',
-  //       credentials: 'include',
-  //     });
-  //     if (!response.ok) throw new Error("Failed to fetch transactions");
-  //     return response.json();
-  //   },
-  // });
 };
 
 
-
+// export const useCategories = () => {
+//   return useQuery({
+//     queryKey: ["categories"],
+//     queryFn: async (): Promise<Category[]> => {
+//       const response = await fetchWithAuth(`${API_BASE_URL}/transaction_categories`, {
+//         method: 'GET',
+//       });
+//       return response
+//     },
+//   });
+// };
 
 
 export const useAddTransaction = () => {
@@ -58,13 +59,13 @@ export const useAddTransaction = () => {
   
   return useMutation({
     mutationFn: async (transaction: Omit<Transaction, "id">) => {
-      const response = await fetch(`${API_BASE_URL}`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        
         body: JSON.stringify(transaction),
       });
-      if (!response.ok) throw new Error("Failed to add transaction");
-      return response.json();
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
@@ -77,7 +78,7 @@ export const useDeleteTransaction = () => {
   
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`${API_BASE_URL}/${id}`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/${id}`, {
         method: "DELETE",
       });
       if (!response.ok){        

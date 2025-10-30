@@ -37,5 +37,4 @@ public class TransactionCategoryController {
         transactionCategoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
     }
-
 }

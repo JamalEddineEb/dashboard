@@ -12,6 +12,7 @@ import { useAddCategory, useDeleteCategory } from "@/hooks/useManageCategories";
 
 const Categories = () => {
   const { data: categories = [], isLoading } = useCategories();
+  
   const addCategory = useAddCategory();
   const deleteCategory = useDeleteCategory();
 
