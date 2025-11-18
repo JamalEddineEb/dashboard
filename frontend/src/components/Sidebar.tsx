@@ -3,20 +3,22 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const menuItems = [
+type MenuItem = {
+  icon: any;
+  label: string;
+  path?: string;
+  action?: () => void;
+  badge?: number;
+};
+
+const menuItems: MenuItem[] = [
   { icon: LayoutGrid, label: "Overview", path: "/" },
-  // { icon: Wallet, label: "My Wallet", path: "/wallet" },
   { icon: Receipt, label: "Transaction", path: "/transactions" },
   { icon: Tag, label: "Categories", path: "/categories" },
-  // { icon: HandCoins, label: "Loans", path: "/loans" },
-  // { icon: TrendingUp, label: "Investment", path: "/investment" },
-  // { icon: BarChart3, label: "Statistic", path: "/statistic" },
-  // { icon: PieChart, label: "Budgeting", path: "/budgeting" },
-  // { icon: FileText, label: "Report", path: "/report" },
-  // { icon: MessageSquare, label: "Message", path: "/message", badge: 3 },
+  { icon: TrendingUp, label: "Market Insights", path: "/insights" },
 ];
 
-const settingsItems = [
+const settingsItems: MenuItem[] = [
   { icon: Settings, label: "Settings" },
   { icon: MessageCircle, label: "Feedback" },
   { icon: HelpCircle, label: "Help & Center" },

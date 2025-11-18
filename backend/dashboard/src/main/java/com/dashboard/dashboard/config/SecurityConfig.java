@@ -25,7 +25,9 @@ public class SecurityConfig {
 			.cors(Customizer.withDefaults())
 			.csrf(c -> c.disable())
 			.authorizeHttpRequests(authorize -> authorize
-				.anyRequest().authenticated()
+				.anyRequest()
+				.permitAll()
+				// .authenticated()
 			)
 			.oauth2Login(oauth2 -> oauth2
 						.successHandler(new SimpleUrlAuthenticationSuccessHandler("http://localhost:4200"))
