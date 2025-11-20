@@ -3,7 +3,6 @@ from typing import List, Dict, Any
 from pydantic import BaseModel
 import os
 import re
-import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import asyncpraw
 from transformers import AutoTokenizer, TFAutoModelForSequenceClassification

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import news, reddit_sentiment, overview
+from routers import news, reddit_sentiment, overview, trends
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI
@@ -21,8 +21,9 @@ app.add_middleware(
 )
 
 app.include_router(news.router, prefix="/api", tags=["market"])
-app.include_router(reddit_sentiment.router, prefix="/api", tags=["user"])
-app.include_router(overview.router, prefix="/api", tags=["user"])
+app.include_router(reddit_sentiment.router, prefix="/api", tags=["sentiment"])
+app.include_router(overview.router, prefix="/api", tags=["overview"])
+app.include_router(trends.router, prefix="/api", tags=["trends"])
 
 
 if __name__ == "__main__":
