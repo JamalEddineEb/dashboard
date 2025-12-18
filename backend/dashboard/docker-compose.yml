@@ -1,7 +1,7 @@
-version: '3.8'
+version: "3.8"
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.0
     container_name: dashboard-postgres
     environment:
       POSTGRES_DB: dashboard
@@ -29,6 +29,6 @@ services:
   #     - ./pom.xml:/app/pom.xml
   #     - ./mvnw:/app/mvnw
   #     - ./.mvn:/app/.mvn
-   
+
 volumes:
   postgres_data:

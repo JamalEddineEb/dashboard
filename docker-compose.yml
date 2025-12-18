@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    image: node:20-alpine
+    image: oven/bun:1
     working_dir: /app
     volumes:
       - ./frontend:/app:delegated
@@ -11,7 +11,7 @@ services:
       - "5173:5173"
     environment:
       - CHOKIDAR_USEPOLLING=true
-    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    command: sh -c "bun install --no-audit --no-fund && bun run dev -- --host 0.0.0.0"
 
   backend:
     build:
@@ -20,10 +20,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/dashboard
-      - SPRING_DATASOURCE_USERNAME=dashboard
-      - SPRING_DATASOURCE_PASSWORD=pass
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+
     depends_on:
       - financial_insights
       - postgres
@@ -40,12 +42,12 @@ services:
       - ./financial_insights:/app:delegated
 
   postgres:
-    image: postgres:latest
+    image: postgres:17.0
     container_name: dashboard-postgres
     environment:
       POSTGRES_DB: dashboard
-      POSTGRES_USER: dashboard
-      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
