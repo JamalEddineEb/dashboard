@@ -1,4 +1,20 @@
-import { LayoutGrid, Wallet, Receipt, HandCoins, TrendingUp, BarChart3, PieChart, FileText, MessageSquare, Settings, MessageCircle, HelpCircle, Moon, Sun, Tag } from "lucide-react";
+import {
+  LayoutGrid,
+  Wallet,
+  Receipt,
+  HandCoins,
+  TrendingUp,
+  BarChart3,
+  PieChart,
+  FileText,
+  MessageSquare,
+  Settings,
+  MessageCircle,
+  HelpCircle,
+  Moon,
+  Sun,
+  Tag,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -31,25 +47,28 @@ export function Sidebar() {
 
   // Apply dark mode on mount and when toggled
   useState(() => {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add("dark");
   });
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     if (!darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   };
 
   return (
     <aside className="w-64 bg-card border-r border-border h-screen flex flex-col p-6">
-      <div className="flex items-center gap-2 mb-8 cursor-pointer" onClick={() => navigate("/")}>
+      <div
+        className="flex items-center gap-2 mb-8 cursor-pointer"
+        onClick={() => navigate("/")}
+      >
         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
           <span className="text-primary-foreground font-bold text-sm">D</span>
         </div>
-        <span className="font-bold text-xl">DellFin</span>
+        <span className="font-bold text-xl">FinDash</span>
       </div>
 
       <div className="mb-8">
@@ -65,7 +84,7 @@ export function Sidebar() {
                   "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors relative",
                   isActive
                     ? "bg-primary/10 text-primary font-medium"
-                    : "text-foreground/70 hover:bg-secondary"
+                    : "text-foreground/70 hover:bg-secondary",
                 )}
               >
                 <item.icon className="w-5 h-5" />
@@ -82,7 +101,9 @@ export function Sidebar() {
       </div>
 
       <div className="mt-auto">
-        <p className="text-xs text-muted-foreground mb-4 font-medium">Help & Settings</p>
+        <p className="text-xs text-muted-foreground mb-4 font-medium">
+          Help & Settings
+        </p>
         <nav className="space-y-1 mb-6">
           {settingsItems.map((item) => (
             <button
@@ -101,11 +122,17 @@ export function Sidebar() {
             onClick={toggleDarkMode}
             className="w-12 h-6 bg-secondary rounded-full relative transition-colors"
           >
-            <div className={cn(
-              "w-5 h-5 bg-card rounded-full absolute top-0.5 transition-all shadow-sm flex items-center justify-center",
-              darkMode ? "left-6" : "left-0.5"
-            )}>
-              {darkMode ? <Moon className="w-3 h-3" /> : <Sun className="w-3 h-3" />}
+            <div
+              className={cn(
+                "w-5 h-5 bg-card rounded-full absolute top-0.5 transition-all shadow-sm flex items-center justify-center",
+                darkMode ? "left-6" : "left-0.5",
+              )}
+            >
+              {darkMode ? (
+                <Moon className="w-3 h-3" />
+              ) : (
+                <Sun className="w-3 h-3" />
+              )}
             </div>
           </button>
         </div>

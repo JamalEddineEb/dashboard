@@ -2,9 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { LogIn, UserPlus, Mail, Lock, User } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabaseClient";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,7 +24,7 @@ const Auth = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       toast.error("Please fill in all fields");
       return;
@@ -34,9 +41,35 @@ const Auth = () => {
       }
     }
 
-    // Here you'll handle the actual authentication
-    toast.success(isLogin ? "Login successful!" : "Account created successfully!");
-    console.log(isLogin ? "Login" : "Signup", formData);
+    if (isLogin) {
+      // LOGIN LOGIC
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Login successful!");
+        // Redirect user or update state here
+      }
+    } else {
+      // SIGNUP LOGIC
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { full_name: formData.name }, // Store extra user info
+        },
+      });
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Please check your email for verification!");
+      }
+    }
   };
 
   return (
@@ -45,9 +78,11 @@ const Auth = () => {
         <CardHeader className="space-y-1">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">D</span>
+              <span className="text-primary-foreground font-bold text-lg">
+                D
+              </span>
             </div>
-            <span className="font-bold text-2xl">DellFin</span>
+            <span className="font-bold text-2xl">FinDash</span>
           </div>
           <CardTitle className="text-2xl">
             {isLogin ? "Welcome back" : "Create an account"}
@@ -70,7 +105,9 @@ const Auth = () => {
                     placeholder="John Doe"
                     className="pl-9"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -86,7 +123,9 @@ const Auth = () => {
                   placeholder="you@example.com"
                   className="pl-9"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -101,7 +140,9 @@ const Auth = () => {
                   placeholder="••••••••"
                   className="pl-9"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -117,7 +158,12 @@ const Auth = () => {
                     placeholder="••••••••"
                     className="pl-9"
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -143,7 +189,12 @@ const Auth = () => {
               type="button"
               onClick={() => {
                 setIsLogin(!isLogin);
-                setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+                setFormData({
+                  name: "",
+                  email: "",
+                  password: "",
+                  confirmPassword: "",
+                });
               }}
               className="text-primary hover:underline"
             >

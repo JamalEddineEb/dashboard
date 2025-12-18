@@ -21,8 +21,12 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=local
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/dashboard
+      - SPRING_DATASOURCE_USERNAME=dashboard
+      - SPRING_DATASOURCE_PASSWORD=pass
     depends_on:
       - financial_insights
+      - postgres
 
   financial_insights:
     build:
@@ -34,3 +38,18 @@ services:
       - ./.env
     volumes:
       - ./financial_insights:/app:delegated
+
+  postgres:
+    image: postgres:latest
+    container_name: dashboard-postgres
+    environment:
+      POSTGRES_DB: dashboard
+      POSTGRES_USER: dashboard
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

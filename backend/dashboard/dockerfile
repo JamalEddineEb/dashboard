@@ -5,6 +5,7 @@ WORKDIR /app
 # Copy Maven/Gradle wrapper only
 COPY mvnw* pom.xml ./
 COPY .mvn .mvn
+COPY src src
 
 # Download dependencies first (layer caching)
 RUN ./mvnw dependency:go-offline

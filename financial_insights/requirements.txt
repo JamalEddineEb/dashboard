@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+httpx
+python-dotenv
+pydantic
+asyncpraw
+yfinance
+
+# Optional / heavy deps (not required for basic endpoints)
+# transformers
+#tensorflow

@@ -9,27 +9,32 @@ import Categories from "./pages/Categories";
 import Insights from "./pages/Insights";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import ProtectedLayout from "./lib/protected";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/insights" element={<Insights />} />
-          <Route path="/auth" element={<Auth />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route element={<ProtectedLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/transactions" element={<Transactions />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/insights" element={<Insights />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </AuthProvider>
 );
 
 export default App;
