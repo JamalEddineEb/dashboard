@@ -2,16 +2,19 @@ version: "3.8"
 
 services:
   frontend:
-    image: oven/bun:1
-    working_dir: /app
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
       - ./frontend:/app:delegated
-      - /app/node_modules
     ports:
-      - "5173:5173"
+      - "4200:4200"
+    env_file:
+      - ./.env
     environment:
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
       - CHOKIDAR_USEPOLLING=true
-    command: sh -c "bun install --no-audit --no-fund && bun run dev -- --host 0.0.0.0"
 
   backend:
     build:
@@ -25,7 +28,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
-
+    volumes:
+      - ./backend/dashboard:/app:delegated
     depends_on:
       - financial_insights
       - postgres

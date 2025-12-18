@@ -1,5 +1,6 @@
 package com.dashboard.dashboard.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,17 +24,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
         throws Exception {
         http
+            .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
-            .csrf(c -> c.disable())
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            .authorizeHttpRequests(authorize ->
-                authorize.anyRequest().authenticated()
+            .authorizeHttpRequests(auth ->
+                auth
+                    .requestMatchers("/public/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
             )
             .oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(Customizer.withDefaults())
+            )
+            .exceptionHandling(ex ->
+                ex.authenticationEntryPoint((req, res, e) ->
+                    res.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                )
             );
+
         return http.build();
     }
 
